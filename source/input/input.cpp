@@ -24,6 +24,9 @@
 #include "input.h"
 #include "yuv.h"
 #include "y4m.h"
+#ifdef ENABLE_VPYSYNTH
+    #include "vpy.h"
+#endif
 
 using namespace X265_NS;
 
@@ -33,6 +36,9 @@ InputFile* InputFile::open(InputFileInfo& info, bool bForceY4m, bool alpha, int 
 
     if (bForceY4m || (s && !strcmp(s, ".y4m")))
         return new Y4MInput(info, alpha, format);
-    else
+    #ifdef ENABLE_VPYSYNTH
+    if (s && !strcmp(s, ".vpy"))
+        return new VPYInput(info);
+    #endif
         return new YUVInput(info, alpha, format);
 }
