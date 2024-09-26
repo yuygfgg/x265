@@ -1,0 +1,55 @@
+name: macOS
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build-clang:
+    runs-on: macos-latest
+
+    env:
+      CC: clang
+      CXX: clang++
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Print compiler version
+      run: ${{ env.CC }} --version
+
+    - name: Install dependencies
+      run: |
+        brew update
+        brew install automake autoconf libtool pkg-config llvm
+
+
+    - name: build
+      run: |
+        export CC=/opt/homebrew/opt/llvm/bin/clang
+        export CXX=/opt/homebrew/opt/llvm/bin/clang++
+        mkdir -p build/macos
+        cd build/macos
+
+        mkdir -p 8bit 10bit 12bit
+        cd 12bit
+        cmake ../../../source -DHIGH_BIT_DEPTH=ON -DEXPORT_C_API=OFF -DENABLE_SHARED=OFF -DENABLE_CLI=OFF -DMAIN12=ON
+        make ${MAKEFLAGS} -j
+
+        cd ../10bit
+        cmake ../../../source -DHIGH_BIT_DEPTH=ON -DEXPORT_C_API=OFF -DENABLE_SHARED=OFF -DENABLE_CLI=OFF
+        make ${MAKEFLAGS} -j
+
+        cd ../8bit
+        ln -sf ../10bit/libx265.a libx265_main10.a
+        ln -sf ../12bit/libx265.a libx265_main12.a
+        cmake ../../../source -DEXTRA_LIB="x265_main10.a;x265_main12.a" -DEXTRA_LINK_FLAGS=-L. -DLINKED_10BIT=ON -DLINKED_12BIT=ON
+        make ${MAKEFLAGS} -j
+    
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-macos-latest
+        if-no-files-found: error
+        path: build/macos/
+
+
+    

@@ -25,7 +25,7 @@
  # PURPOSE: Identity version control software version display, also read version files to present x265 version.
  #################################################################################################################
  #Default Settings, for user to be vigilant about x265 version being reported during product build.
-set(X265_VERSION "unknown")
+set(X265_VERSION "4.0-yuygfgg")
 set(X265_LATEST_TAG "0.0")
 set(X265_TAG_DISTANCE "0")
 
@@ -172,7 +172,7 @@ endif()
 if(X265_TAG_DISTANCE STREQUAL "0")
     set(X265_VERSION "${X265_LATEST_TAG}")
 elseif(X265_TAG_DISTANCE STRGREATER "0")
-    set(X265_VERSION "${X265_LATEST_TAG}+${X265_TAG_DISTANCE}-${X265_REVISION_ID}_yuygfgg_build")
+    set(X265_VERSION "${X265_LATEST_TAG}+${X265_TAG_DISTANCE}-${X265_REVISION_ID}")
 endif()
 
 #will always be printed in its entirety based on version file configuration to avail revision monitoring by repo owners
