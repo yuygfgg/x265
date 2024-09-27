@@ -656,14 +656,15 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
         }
         else if (!strcmp(tune, "animation"))
         {
-            param->bframes = (param->bframes + 2) >= param->lookaheadDepth? param->bframes : param->bframes + 2;
+            if (param->bframes + 1 < param->lookaheadDepth) param->bframes++;
+            if (param->bframes + 1 < param->lookaheadDepth) param->bframes++;
             param->psyRd = 0.4;
             param->rc.aqStrength = 0.4;
             param->deblockingFilterBetaOffset = 1;
             param->deblockingFilterTCOffset = 1;
         }
         else if (!strncmp(tune, "littlepox", 9) || !strncmp(tune, "lp", 2) ||
-                 !strncmp(tune, "vcb-s", 5) || !strncmp(tune, "vcbs", 4)) { // 
+                 !strncmp(tune, "vcb-s", 5) || !strncmp(tune, "vcbs", 4)) {
             param->searchRange = 25; //down from 57
             param->bEnableAMP = 0;
             param->bEnableRectInter = 0;
@@ -695,7 +696,6 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
                 param->rc.rfConstant = 20;
                 param->psyRd = 1.5; //down
                 param->psyRdoq = 0.8; //down
-
                 if (strstr(tune, "++")) {
                     if (param->maxNumReferences < 2) param->maxNumReferences = 2;
                     if (param->subpelRefine < 3) param->subpelRefine = 3;
@@ -707,7 +707,6 @@ int x265_param_default_preset(x265_param* param, const char* preset, const char*
                 param->rc.rfConstant = 18;
                 param->psyRd = 1.8; //down
                 param->psyRdoq = 1.0; //same
-
                 if (strstr(tune, "++")) {
                     if (param->maxNumReferences < 3) param->maxNumReferences = 3;
                     if (param->subpelRefine < 3) param->subpelRefine = 3;
