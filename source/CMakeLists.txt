@@ -26,6 +26,7 @@ include(CheckCSourceCompiles)
 include(CheckCXXSourceCompiles)
 
 option(FPROFILE_GENERATE "Compile executable to generate usage data" OFF)
+
 option(FPROFILE_USE "Compile executable using generated usage data" OFF)
 option(NATIVE_BUILD "Target the build CPU" OFF)
 option(STATIC_LINK_CRT "Statically link C runtime for release builds" OFF)
@@ -917,6 +918,10 @@ if(ENABLE_CLI)
                           output/raw.cpp)               # muxers
     if(ENABLE_VPYSYNTH AND ENABLE_CLI)
         find_package(Vapoursynth)
+            set(LIBVAPOURSYNTH_SCRIPT_DEFAULT /usr/local/lib/libvapoursynth-script.dylib)
+            set(LIBVAPOURSYNTH_SCRIPT ${LIBVAPOURSYNTH_SCRIPT_DEFAULT} CACHE STRING "LIBVAPOURSYNTH_SCRIPT")
+        
+            add_compile_definitions(LIBVAPOURSYNTH_SCRIPT=${LIBVAPOURSYNTH_SCRIPT})
             if(GCC)
                 set_source_files_properties(input/input.cpp input/vpy.cpp PROPERTIES COMPILE_OPTIONS "-std=gnu++11")
             elseif(MSVC_VERSION GREATER_EQUAL "1900")
@@ -927,6 +932,8 @@ if(ENABLE_CLI)
                 endif()
             endif()
         endif()
+
+
     source_group(input FILES ${InputFiles})
     source_group(output FILES ${OutputFiles})
     if(ENABLE_VPYSYNTH)

@@ -27,10 +27,13 @@
 #include <unordered_map>
 #include <atomic>
 
-#include <vapoursynth/VSScript.h>
-#include <vapoursynth/VSHelper.h>
+#include </usr/local/include/vapoursynth/VSScript.h>
+#include </usr/local/include/vapoursynth/VSHelper.h>
 
 #include "input.h"
+
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
 
 #if _WIN32
     #include <windows.h>
@@ -127,9 +130,9 @@ protected:
         func_t vs_address(LPCSTR func) { return GetProcAddress(vss_library, func); }
     #else
         #ifdef __MACH__
-            string_t libname = "/usr/local/lib/libvapoursynth-script.dylib";
+            string_t libname = TOSTRING(LIBVAPOURSYNTH_SCRIPT);
         #else
-            string_t libname = "libvapoursynth-script.so";
+            string_t libname = TOSTRING(LIBVAPOURSYNTH_SCRIPT);
         #endif
         char libname_buffer[BUFFER_SIZE];
         void vs_open() { vss_library = dlopen(libname, RTLD_GLOBAL | RTLD_LAZY | RTLD_NOW); }
